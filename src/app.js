@@ -24,44 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
 			return;
 		}
 
-		// Fetch conversion rate from selected currencies
-		let rate = 1;
-		let date = new Date().toISOString().slice(0, 10);
-		if (fromCurrency !== toCurrency) {
-			try {
-				const res = await fetch(`https://api.exchangerate.host/latest?base=${fromCurrency}&symbols=${toCurrency}`);
-				const data = await res.json();
-				rate = data.rates[toCurrency];
-				date = data.date;
-			} catch {
-				resultDiv.textContent = 'Error fetching exchange rate.';
-				return;
+			// Fetch conversion rate using Frankfurter API
+			let rate = 1;
+			let date = new Date().toISOString().slice(0, 10);
+			let converted = amount;
+			if (fromCurrency !== toCurrency) {
+				try {
+					const res = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`);
+					const data = await res.json();
+					rate = data.rates[toCurrency] / amount;
+					converted = data.rates[toCurrency];
+					date = data.date;
+				} catch {
+					resultDiv.textContent = 'Error fetching exchange rate.';
+					return;
+				}
 			}
-		}
 
-		// Convert to target currency
-		const converted = amount * rate;
-		// Convert to smallest unit (cents/pence)
-		const smallestUnit = Math.round(converted * 100);
-
-		// Coin breakdown (greedy algorithm)
-		const breakdown = [];
-		let remaining = smallestUnit;
-		for (let i = 0; i < coins[toCurrency].length; i++) {
-			const count = Math.floor(remaining / coins[toCurrency][i]);
-			breakdown.push(count);
-			remaining -= count * coins[toCurrency][i];
-		}
-
-		// Output
-		let output = `<strong>Converted Amount:</strong> ${smallestUnit} ${(toCurrency === 'USD') ? 'cents' : (toCurrency === 'GBP') ? 'pence' : 'euro cents'}<br>`;
-		output += `<strong>Exchange Rate (${fromCurrency} → ${toCurrency}):</strong> ${rate.toFixed(4)}<br>`;
-		output += `<strong>Date:</strong> ${date}<br><br>`;
-		output += '<strong>Coin Breakdown:</strong><ul>';
-		breakdown.forEach((count, i) => {
-			output += `<li>${coinNames[toCurrency][i]}: ${count}</li>`;
-		});
-		output += '</ul>';
-		resultDiv.innerHTML = output;
+			// Output
+			let output = `<strong>Converted Amount:</strong> ${converted.toFixed(2)} ${toCurrency}<br>`;
+			output += `<strong>Exchange Rate (${fromCurrency} → ${toCurrency}):</strong> ${rate.toFixed(4)}<br>`;
+			output += `<strong>Date:</strong> ${date}<br>`;
+			resultDiv.innerHTML = output;
 	});
 });
