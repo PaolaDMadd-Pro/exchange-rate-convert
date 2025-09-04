@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			let converted = amount;
 			if (fromCurrency !== toCurrency) {
 				try {
-					const res = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`);
-					const data = await res.json();
+					const res = await fetch(`https://api.frankfurter.dev/v1/latest?base=${fromCurrency}&symbols=${toCurrency}`);
+                    const data = await res.json();
 					rate = data.rates[toCurrency] / amount;
 					converted = data.rates[toCurrency];
 					date = data.date;
