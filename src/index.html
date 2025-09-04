@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exchange Rate Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Exchange Rate Converter</h1>
+    <form id="converter-form">
+      <label for="currency">Currency:</label>
+      <select id="currency" name="currency">
+        <option value="USD">US Dollar (USD)</option>
+        <option value="GBP">British Pound (GBP)</option>
+        <option value="EUR">Euro (EUR)</option>
+      </select>
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+      <button type="submit">Convert</button>
+    </form>
+    <div id="result"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

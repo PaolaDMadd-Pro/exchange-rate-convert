@@ -137,3 +137,19 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+# macOS system files (can cause issues for non-Apple users)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS folder custom attributes
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# macOS resource fork files
+._*
