@@ -2,18 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	const form = document.getElementById('converter-form');
 	const resultDiv = document.getElementById('result');
 
-	// Coin denominations and names for each currency
-	const coins = {
-		USD: [25, 10, 5, 1],
-		GBP: [200, 100, 50, 20, 10, 5, 2, 1],
-		EUR: [200, 100, 50, 20, 10, 5, 2, 1]
-	};
-	const coinNames = {
-		USD: ['Quarter (25¢)', 'Dime (10¢)', 'Nickel (5¢)', 'Penny (1¢)'],
-		GBP: ['£2', '£1', '50p', '20p', '10p', '5p', '2p', '1p'],
-		EUR: ['€2', '€1', '50c', '20c', '10c', '5c', '2c', '1c']
-	};
-
 	form.addEventListener('submit', async function (e) {
 		e.preventDefault();
 		const fromCurrency = document.getElementById('currency').value;
@@ -25,13 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 			// Fetch conversion rate using Frankfurter API
-			let rate = 1;
+			let rate =1;
 			let date = new Date().toISOString().slice(0, 10);
 			let converted = amount;
 			if (fromCurrency !== toCurrency) {
 				try {
-					const res = await fetch(`https://api.frankfurter.dev/v1/latest?base=${fromCurrency}&symbols=${toCurrency}`);
-                    const data = await res.json();
+					const data = await  convert(fromCurrency, toCurrency, amount);
 					rate = data.rates[toCurrency] / amount;
 					converted = data.rates[toCurrency];
 					date = data.date;
@@ -48,3 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
 			resultDiv.innerHTML = output;
 	});
 });
+function convert(from, to, amount) {
+  fetch(`https://api.frankfurter.dev/v1/latest?base=${from}&symbols=${to}`)
+    .then((resp) => resp.json())
+    .then((data) => {
+      const convertedAmount = (amount * data.rates[to]).toFixed(2);
+      return(`${amount} ${from} = ${convertedAmount} ${to}`);
+    });
+  }
